@@ -52,7 +52,7 @@ class AuthUserService
 
             try {
                 // ? send email
-                // Mail::to($email)->send(new SendCode($data));
+                Mail::to($email)->send(new SendCode($data));
 
                 Cache::put($email, $code, now()->addMinutes(10));
 
