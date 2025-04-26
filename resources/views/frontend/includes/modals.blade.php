@@ -140,11 +140,12 @@
     </div>
 </div>
 
-{{-- ? modal sign-in --}}
+@endif
+
+
+{{-- ? modal messages --}}
 <div id="messages" class="modal">
     <div class="modal-body bg-grd-1">     
         <span class="message-text"></span>
     </div>
 </div>
-
-@endif
