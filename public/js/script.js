@@ -1738,6 +1738,9 @@ class CreditServices {
 
             for (const key in this.objData.errors) {
                 html += this.objData.errors[key] + '<br>';
+
+                console.error(this.objData.errors[key]);
+
             }
 
             this.modalMessageText.innerHTML = html;
