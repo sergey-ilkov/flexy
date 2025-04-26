@@ -14,4 +14,6 @@ return [
     'phone_not_registered' => 'A user with this phone number is not registered.',
 
     'you_refused_authorization_site' => 'You have refused authorization on the site.',
+
+    'services_not_db' => 'Services have not yet been added to the database.',
 ];

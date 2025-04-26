@@ -183,6 +183,16 @@ class ServiceFrontendService
             }
         }
 
+        if (empty($resData['data'])) {
+            $error = [
+                "status" => "error",
+                'errors' => [
+                    'get-services' => __('messages.services_not_db'),
+                ]
+            ];
+
+            return response()->json($error);
+        }
 
 
         return response()->json($resData);

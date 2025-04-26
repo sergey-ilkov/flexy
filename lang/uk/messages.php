@@ -14,4 +14,6 @@ return [
     'phone_not_registered' => 'Користувач з таким номером телефону не зареєстрований.',
 
     'you_refused_authorization_site' => 'Ви відхилили вхід до сайту.',
+
+    'services_not_db' => 'Сервіси ще не додані до бази даних.',
 ];
