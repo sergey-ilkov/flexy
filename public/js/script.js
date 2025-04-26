@@ -1731,6 +1731,18 @@ class CreditServices {
 
             return;
         }
+
+
+        if (this.objData['errors']) {
+            let html = '';
+
+            for (const key in this.objData.errors) {
+                html += this.objData.errors[key] + '<br>';
+            }
+
+            this.modalMessageText.innerHTML = html;
+            openModal(this.modalMessage);
+        }
     }
 
     send() {
