@@ -113,12 +113,12 @@ class PostAdminService
 
         if ($image) {
 
-            // dd(public_path('storage/' . $pathImageMin));
 
             $name = time();
             $ext = $image->getClientOriginalExtension();
             $imageName = $name . '.' . $ext;
-            $pathImage = $image->storeAs('/images/blog', $imageName);
+            // $pathImage = $image->storeAs('/images/blog', $imageName);
+            $pathImage = $image->storeAs('storage/images/blog', $imageName);
 
 
             // ? save scale image
