@@ -113,6 +113,8 @@ class PostAdminService
 
         if ($image) {
 
+            dd(public_path('storage/' . $pathImageMin));
+
             $name = time();
             $ext = $image->getClientOriginalExtension();
             $imageName = $name . '.' . $ext;
@@ -126,7 +128,6 @@ class PostAdminService
             $pathImageMin = 'images/blog/' . $name . '-min.' . $ext;
             $thumbImage->save(public_path('storage/' . $pathImageMin));
 
-            dd(public_path('storage/' . $pathImageMin));
 
             if ($post) {
                 $this->deleteImage($post->image);
