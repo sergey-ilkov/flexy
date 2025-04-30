@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Log;
 
 class ServiceFrontendService
 {
-    protected $limit = 4;
+
+    protected $limit = 8;
     protected $user = null;
 
 

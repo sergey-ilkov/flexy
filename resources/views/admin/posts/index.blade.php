@@ -38,7 +38,8 @@
                     <div class="table-body__col">title</div>
                     <div class="table-body__col">slug</div>
                     <div class="table-body__col" style="max-width: 100px">published</div>
-                    <div class="table-body__col" style="max-width: 120px">date</div>
+                    <div class="table-body__col" style="max-width: 120px">created</div>
+                    <div class="table-body__col" style="max-width: 120px">updated</div>
 
                     <div class="table-body__col table-body__col-actions" style="min-width: 240px">actions</div>
 
@@ -53,6 +54,7 @@
                     <div class="table-body__col">{{ $post->slug }}</div>
                     <div class="table-body__col" style="max-width: 100px">{{ $post->published ? 'true': 'false'}}</div>
                     <div class="table-body__col" style="max-width: 120px">{{ $post->created_at->format('d-m-Y') }}</div>
+                    <div class="table-body__col" style="max-width: 120px">{{ $post->updated_at->format('d-m-Y') }}</div>
 
 
                     <div class="table-body__col table-body__col-actions" style="min-width: 240px">

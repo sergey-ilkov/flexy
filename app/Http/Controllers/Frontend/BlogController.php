@@ -17,7 +17,7 @@ class BlogController extends Controller
 
         $page = 'blog';
 
-        $posts = Post::where('published',  true)->orderBy('updated_at', 'desc')->paginate(4);
+        $posts = Post::where('published',  true)->orderBy('created_at', 'desc')->paginate(4);
 
         // $services = Service::where('published', 1)->orderBy('rating', 'desc')->take(10)->get();
         $services = Service::where('published', 1)->orderBy('rating', 'desc')->limit(10)->get();

@@ -177,7 +177,7 @@ class Accordion {
             content: '.accordion-content',
             speed: 200,
             firstOpen: false,
-            animation: true,
+
         }
         Object.assign(this.options, userOptions);
         this.accordionItems = this.divAccordion.querySelectorAll(this.options.accordion);
@@ -215,17 +215,12 @@ class Accordion {
 
     open() {
         this.accordionItems[this.currentIndex].classList.add(this.openClass);
-        if (this.options.animation) {
-            this.accordionContents[this.currentIndex].style.maxHeight = this.accordionContents[this.currentIndex].scrollHeight + 'px';
-        }
+        this.accordionContents[this.currentIndex].style.maxHeight = this.accordionContents[this.currentIndex].scrollHeight + 'px';
     }
 
     close() {
         this.accordionItems[this.currentIndex].classList.remove(this.openClass);
-        if (this.options.animation) {
-
-            this.accordionContents[this.currentIndex].style.maxHeight = null;
-        }
+        this.accordionContents[this.currentIndex].style.maxHeight = null;
     }
 }
 
@@ -1323,30 +1318,24 @@ class CreditServices {
                 classActive: 'active',
             });
         } else {
-            new Accordion(this.divServicesTabs, {
-                accordion: '.services-accordion',
-                button: '.services-accordion__btn',
-                content: '.services-tabs__panel',
-                speed: 400,
-                firstOpen: true,
-                animation: false,
-            });
 
 
-            // this.timerId = setTimeout(() => {
+            this.timerId = setTimeout(() => {
 
-            //     // clearTimeout(this.timerId);
+                clearTimeout(this.timerId);
 
-            //     new Accordion(this.divServicesTabs, {
-            //         accordion: '.services-accordion',
-            //         button: '.services-accordion__btn',
-            //         content: '.services-tabs__panel',
-            //         speed: 400,
-            //         firstOpen: true,
-            //     });
+                new Accordion(this.divServicesTabs, {
+                    accordion: '.services-accordion',
+                    button: '.services-accordion__btn',
+                    content: '.services-tabs__panel',
+                    speed: 400,
+                    firstOpen: true,
+                });
+
+                console.log('init accardion');
 
 
-            // }, 1000);
+            }, 1000);
 
         }
     }

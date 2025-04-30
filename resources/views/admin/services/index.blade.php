@@ -38,7 +38,8 @@
                     <div class="table-body__col">name</div>
                     <div class="table-body__col" style="max-width: 200px">categoryName</div>
                     <div class="table-body__col" style="max-width: 100px">published</div>
-                    <div class="table-body__col" style="max-width: 120px">date</div>
+                    <div class="table-body__col" style="max-width: 120px">created</div>
+                    <div class="table-body__col" style="max-width: 120px">updated</div>
 
                     <div class="table-body__col table-body__col-actions">actions</div>
 
@@ -53,6 +54,7 @@
                     <div class="table-body__col" style="max-width: 200px">{{ $service->serviceCategory->name}}</div>
                     <div class="table-body__col" style="max-width: 100px">{{ $service->published ? 'true': 'false'}}</div>
                     <div class="table-body__col" style="max-width: 120px">{{ $service->created_at->format('d-m-Y') }}</div>
+                    <div class="table-body__col" style="max-width: 120px">{{ $service->updated_at->format('d-m-Y') }}</div>
 
 
                     <div class="table-body__col table-body__col-actions">
