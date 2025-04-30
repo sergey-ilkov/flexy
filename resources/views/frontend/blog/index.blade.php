@@ -33,7 +33,7 @@
                 <div class="blog-hero__actions">
                     <button class="blog-hero__btn btn-1 modal-btn" type="button" data-target="sign-up">Зареєструватись</button>
 
-                    <a class="blog-hero__link btn-2" href="about.html">Про нас</a>
+                    <a class="blog-hero__link btn-2" href="{{ route('about') }}">Про нас</a>
                 </div>
 
 

@@ -126,6 +126,8 @@ class PostAdminService
             $pathImageMin = 'images/blog/' . $name . '-min.' . $ext;
             $thumbImage->save(public_path('storage/' . $pathImageMin));
 
+            dd(public_path('storage/' . $pathImageMin));
+
             if ($post) {
                 $this->deleteImage($post->image);
                 $this->deleteImage($post->image_min);
