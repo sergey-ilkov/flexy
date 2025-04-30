@@ -70,7 +70,7 @@ class ServiceAdminService
             return false;
         }
 
-        $this->deleteImage($service->image);
+        $this->deleteImage($service->icon);
 
         return $this->serviceInterface->delete($service);
     }
@@ -97,7 +97,7 @@ class ServiceAdminService
 
 
             if ($service) {
-                $this->deleteImage($service->image);
+                $this->deleteImage($service->icon);
             }
         }
 
