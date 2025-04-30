@@ -93,7 +93,7 @@ class ServiceAdminService
             $name = time();
             $ext = $image->getClientOriginalExtension();
             $imageName = $name . '.' . $ext;
-            $pathImage = $image->storeAs('images/services', $imageName);
+            $pathImage = $image->storeAs('/images/services', $imageName);
 
 
             if ($service) {
