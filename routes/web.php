@@ -38,3 +38,7 @@ Route::middleware(['throttle:user-auth'])->group(function () {
 Route::middleware('auth:web')->group(function () {
     Route::get('/logout', [AuthUserController::class, 'logout'])->name('user.logout');
 });
+
+
+// ? test
+Route::get('/test', [TestController::class, 'index'])->name('test');

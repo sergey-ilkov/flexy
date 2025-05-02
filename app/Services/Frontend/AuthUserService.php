@@ -116,10 +116,12 @@ class AuthUserService
                 }
 
                 // $idLast = $users->last()->id;
-                $id_unique = $this->generateUniqueString($len = 10);
+                // $id_unique = $this->generateUniqueString($len = 10);
             } else {
-                $id_unique = $this->generateUniqueString($len = 10);
+                // $id_unique = $this->generateUniqueString($len = 10);
             }
+
+            $id_unique = str()->substr($phone, -7) . str(str()->random(8))->lower();
 
 
 

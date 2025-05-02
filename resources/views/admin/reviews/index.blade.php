@@ -38,7 +38,8 @@
                     <div class="table-body__col">name</div>
                     <div class="table-body__col">surname</div>
                     <div class="table-body__col" style="max-width: 50px">rating</div>
-                    <div class="table-body__col" style="max-width: 120px">date</div>
+                    <div class="table-body__col" style="max-width: 120px">created</div>
+                    <div class="table-body__col" style="max-width: 120px">updated</div>
 
                     <div class="table-body__col table-body__col-actions">actions</div>
 
@@ -53,6 +54,7 @@
                     <div class="table-body__col">{{ $review->surname }}</div>
                     <div class="table-body__col" style="max-width: 50px">{{ $review->rating }}</div>
                     <div class="table-body__col" style="max-width: 120px">{{ $review->created_at->format('d-m-Y') }}</div>
+                    <div class="table-body__col" style="max-width: 120px">{{ $review->updated_at->format('d-m-Y') }}</div>
 
 
                     <div class="table-body__col table-body__col-actions">

@@ -415,17 +415,28 @@ function closeModal(modal) {
 }
 
 
-
-function checkPhone(inputValue) {
-    let value = inputValue.replace(/[^\d+]/g, '');
-    // ? max length 13
-    if (value.length > 13) {
-        value = value.slice(0, 13);
+// ? phone validation
+// ? phone validation
+// ? phone validation
+// ? phone validation
+// ? phone validation
+// ? phone validation
+function checkPhone(inputValue, len) {
+    // let value = inputValue.replace(/[^\d+]/g, '');
+    let value = inputValue.replace(/[^\d]/g, '');
+    // ? max len 10
+    if (value.length > len) {
+        value = value.slice(0, len);
     }
 
     return value;
 }
-
+// ? phone validation
+// ? phone validation
+// ? phone validation
+// ? phone validation
+// ? phone validation
+// ? phone validation
 
 const curentYear = new Date().getFullYear();
 function checkDate(data) {
@@ -496,6 +507,10 @@ class SignUp {
         this.modalMessage = document.querySelector('#messages');
         this.modalMessageText = this.modalMessage.querySelector('.message-text');
 
+        this.validCode = 4;
+        this.validPhone = 10;
+
+        this.divPhoneCode = this.modal.querySelector('#phone-code-sign-up');
 
         this.init();
 
@@ -634,9 +649,9 @@ class SignUp {
                     this.currentFormGroup.classList.remove('valid');
                 }
             } else if (input.name === 'phone') {
-                this.value = checkPhone(this.value);
+                this.value = checkPhone(this.value, this.validPhone);
                 input.value = this.value;
-                if (this.value.length == 13) {
+                if (this.value.length == this.validPhone) {
                     this.currentFormGroup.classList.add('valid');
                     this.currentFormGroup.classList.remove('error');
                 } else {
@@ -648,7 +663,7 @@ class SignUp {
                     this.flagValid = false;
                 }
             } else if (input.name === 'code') {
-                if (this.value.length >= 14) {
+                if (this.value.length === this.validCode) {
                     this.currentFormGroup.classList.add('valid');
                     this.currentFormGroup.classList.remove('error');
                 } else {
@@ -682,8 +697,17 @@ class SignUp {
         this.tempData = {};
 
         this.inputs.forEach(input => {
-            this.tempData[input.getAttribute('name')] = input.value.trim();
+            let value = input.value.trim();
+
+            if (input.getAttribute('name') == 'phone') {
+                value = this.divPhoneCode.getAttribute('data-phone-code') + value;
+            }
+
+            this.tempData[input.getAttribute('name')] = value;
         })
+
+
+
 
         if (this.currentRequest === 'email-confirm') {
             this.objSendData['email'] = this.tempData['email'];
@@ -825,6 +849,7 @@ class SignUp {
 
 
     send() {
+
         if (this.flagSend) {
 
             this.flagSend = false;
@@ -934,6 +959,10 @@ class SignIn {
         this.modalMessage = document.querySelector('#messages');
         this.modalMessageText = this.modalMessage.querySelector('.message-text');
 
+        this.validPhone = 10;
+
+        this.divPhoneCode = this.modal.querySelector('#phone-code-sign-in');
+
         this.init();
     }
     init() {
@@ -974,9 +1003,9 @@ class SignIn {
 
 
 
-            this.value = checkPhone(this.inputPhone.value);
+            this.value = checkPhone(this.inputPhone.value, this.validPhone);
             this.inputPhone.value = this.value;
-            if (this.value.length == 13) {
+            if (this.value.length == this.validPhone) {
                 this.flagSend = true;
                 this.currentFormGroup.classList.add('valid');
                 this.currentFormGroup.classList.remove('error');
@@ -1017,7 +1046,8 @@ class SignIn {
 
         this.objSendData = {};
 
-        this.objSendData['phone'] = this.inputPhone.value;
+        this.objSendData['phone'] = this.divPhoneCode.getAttribute('data-phone-code') + this.inputPhone.value;
+        // this.objSendData['phone'] = this.inputPhone.value;
 
         if (this.token) {
             this.objSendData['_token'] = this.token.getAttribute('content');
@@ -1076,6 +1106,8 @@ class SignIn {
     }
 
     send() {
+
+       
         if (this.flagSend) {
 
             this.flagSend = false;

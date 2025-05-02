@@ -32,8 +32,14 @@
             <div class="modal-form-box">
                 <div class="modal-form-group">
                     <label class="modal-form__label" for="phone-sign-in">Номер телефону:</label>
-                    <input id="phone-sign-in" class="modal-form__input" type="text" placeholder="+38 000 000 00 00" autocomplete="off"
-                        name="phone">
+                    {{-- <input id="phone-sign-in" class="modal-form__input" type="text" placeholder="+38 000 000 00 00" autocomplete="off"
+                        name="phone"> --}}
+                    <div class="modal-form-group-phone">
+                        <span id="phone-code-sign-in" class="phone-code" data-phone-code="+38">+38</span>
+                        <input id="phone-sign-in" class="modal-form__input modal-form__input-phone" type="text" placeholder="000 000 00 00" autocomplete="off"
+                            name="phone">
+                    </div>
+                    
                 </div>
             </div>
             <button type="button" class="modal-form__btn btn-1 btn-send">Отримати дзвінок</button>
@@ -82,8 +88,11 @@
                     </div>
                     <div class="modal-form-group">
                         <label class="modal-form__label" for="phone-sign-up">Номер телефону:*</label>
-                        <input id="phone-sign-up" class="modal-form__input" type="text" placeholder="+38 000 000 00 00" autocomplete="off"
-                            name="phone">
+                        <div class="modal-form-group-phone">
+                            <span id="phone-code-sign-up" class="phone-code" data-phone-code="+38">+38</span>
+                            <input id="phone-sign-up" class="modal-form__input modal-form__input-phone" type="text" placeholder="000 000 00 00" autocomplete="off"
+                                name="phone">
+                        </div>
 
                     </div>
                 </div>
@@ -123,7 +132,7 @@
                     <div id="code-confirm-group" class="modal-form-group">
                         <label class="modal-form__label" for="code-confirm">Введіть код підтвердження, який ми вислали вам на
                             email:*</label>
-                        <input id="code-confirm" class="modal-form__input" type="text" placeholder="0000-0000-0000" autocomplete="off"
+                        <input id="code-confirm" class="modal-form__input" type="text" placeholder="0000" autocomplete="off"
                             name="code">
                     </div>
 

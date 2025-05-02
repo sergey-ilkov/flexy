@@ -49,21 +49,30 @@ if (!function_exists('codeGenerator')) {
 
     function codeGenerator()
     {
-        // $chars = "ABCDEFGHIJKMNOPQRSTUVWXYZ";
-        $chars = "ABCDEFGHIJKMNPQRSTUVWXYZ";
-        // $numbers = '1234567890';
-        $numbers = '123456789';
-        $code = '';
-        for ($i = 0; $i < 3; $i++) {
-            if ($i > 0) {
-                $code .= '-';
-            }
-            for ($y = 0; $y < 4; $y++) {
+        // // $chars = "ABCDEFGHIJKMNOPQRSTUVWXYZ";
+        // $chars = "ABCDEFGHIJKMNPQRSTUVWXYZ";
+        // // $numbers = '1234567890';
+        // $numbers = '123456789';
+        // $code = '';
+        // for ($i = 0; $i < 3; $i++) {
+        //     if ($i > 0) {
+        //         $code .= '-';
+        //     }
+        //     for ($y = 0; $y < 4; $y++) {
 
-                $str = rand(0, 1) == 1 ? $chars[rand(0, strlen($chars) - 1)] : $numbers[rand(0, strlen($numbers) - 1)];
-                $code .= $str;
-            }
+        //         $str = rand(0, 1) == 1 ? $chars[rand(0, strlen($chars) - 1)] : $numbers[rand(0, strlen($numbers) - 1)];
+        //         $code .= $str;
+        //     }
+        // }
+
+        $numbers = '1234567890';
+        $code = '';
+
+        for ($y = 0; $y < 4; $y++) {
+
+            $code .= $numbers[rand(0, strlen($numbers) - 1)];
         }
+
         return $code;
     }
 }

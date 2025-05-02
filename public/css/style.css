@@ -2492,10 +2492,12 @@ form label {
     gap: 5px;
     width: 100%;
 }
-.modal-form-group.valid input {
+.modal-form-group.valid input,
+.modal-form-group-phone.valid input {
     border: 1px solid var(--accent-color);
 }
-.modal-form-group.error input {
+.modal-form-group.error input,
+.modal-form-group-phone.error input {
     border: 1px solid var(--color-red);
 }
 .message-error {
@@ -2518,7 +2520,25 @@ form label {
     font-size: 16px;
     padding: 10px 20px;
 }
+.modal-form-group-phone {
+    position: relative;
+}
+.phone-code {
+    font-size: 16px;
+    color: #a7a7a7;
+    position: absolute;
+    top: 0;
+    left: 20px;
 
+    height: 100%;
+    display: flex;
+    align-items: center;
+    line-height: 100%;
+    /* padding-top: 2px; */
+}
+.modal-form__input-phone {
+    padding-left: 55px;
+}
 /* ? modal-body-history */
 .modal-body-history {
     overflow-y: auto;
@@ -4252,6 +4272,9 @@ form label {
         padding-bottom: calc(30px + 10 * (100vw - 390px) / 850);
     }
     .blog__item-img {
+        height: calc(200px + 120 * (100vw - 390px) / 850);
+    }
+    .blog__item-link-img {
         height: calc(200px + 120 * (100vw - 390px) / 850);
     }
 
