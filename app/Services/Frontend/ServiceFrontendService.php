@@ -32,7 +32,20 @@ class ServiceFrontendService
 
         if ($request->action == 'get-services') {
 
-            return $this->getServices();
+            if ($this->user) {
+                $user_id = $this->user->id;
+                $categories = ServiceCategory::with(['services' => function ($query) use ($user_id) {
+                    $query->where('published', 1)->with(['userHistories' => function ($query) use ($user_id) {
+                        $query->where('user_id', $user_id);
+                    }]);
+                }])->get();
+            } else {
+                $categories = ServiceCategory::with(['services' => function ($query) {
+                    $query->where('published', 1);
+                }])->get();
+            }
+
+            return $this->getServices($categories);
         }
 
 
@@ -45,10 +58,23 @@ class ServiceFrontendService
             ]);
 
 
-            $category = ServiceCategory::where('slug', $request->slug)->first();
-            if ($category) {
+            if ($this->user) {
+                $user_id = $this->user->id;
 
-                return $this->getServicesCategory($category->id, $request->offset);
+                $category = ServiceCategory::where('slug', $request->slug)->with(['services' => function ($query) use ($user_id) {
+                    $query->where('published', 1)->with(['userHistories' => function ($query) use ($user_id) {
+                        $query->where('user_id', $user_id);
+                    }]);
+                }])->first();
+            } else {
+                $category = ServiceCategory::where('slug', $request->slug)->with(['services' => function ($query) {
+                    $query->where('published', 1);
+                }])->first();
+            }
+
+
+            if ($category) {
+                return $this->getServicesCategory($category->services, $request->offset);
             }
 
             $error = [
@@ -62,18 +88,22 @@ class ServiceFrontendService
         }
 
 
-
+        // ? user action
         if ($this->user) {
             $actionUser = $request->action;
 
+            $request->validate([
+                'service_id' => 'required',
+            ]);
+
             if ($actionUser == 'hidden-service' || $actionUser == 'active-service') {
 
-                $request->validate([
-                    'service_id' => 'required',
-                ]);
-
-
                 return $this->updateOrCreateActionHistory($actionUser, $request->service_id);
+            }
+
+            if ($actionUser == 'get-credit') {
+
+                return $this->createActionHistory($actionUser, $request->service_id);
             }
         }
 
@@ -95,29 +125,8 @@ class ServiceFrontendService
     public function updateOrCreateActionHistory($actionUser, $service_id)
     {
 
-        $errors = [];
 
-        $action = Action::where('slug', $actionUser)->first();
-
-        if (!$action) {
-            $errors['action'] = 'Invalid action field value';
-        }
-
-
-        $service = Service::where('id', $service_id)->first();
-
-        if (!$service) {
-            $errors['service_id'] = 'Invalid service_id field value';
-        }
-
-        if (!empty($errors)) {
-            $error = [
-                "status" => "error",
-                'errors' => $errors,
-            ];
-
-            return response()->json($error);
-        }
+        $action = $this->validateAction($actionUser, $service_id);
 
         $history = History::updateOrCreate([
             'service_id' => $service_id,
@@ -147,10 +156,67 @@ class ServiceFrontendService
         return response()->json($error);
     }
 
-    public function createActionHistory($actionUser, $service_id) {}
+    public function createActionHistory($actionUser, $service_id)
+    {
+
+        $action = $this->validateAction($actionUser, $service_id);
+
+        $history = History::create([
+            'service_id' => $service_id,
+            'user_id' => $this->user->id,
+            'action_id' => $action->id
+        ]);
 
 
-    public function getServices()
+        if ($history) {
+
+            $resData = [
+                'status' => 'ok',
+            ];
+            return response()->json($resData);
+        }
+
+        $error = [
+            "status" => "error",
+            'errors' => [
+                'create' => "Error update or create",
+            ]
+        ];
+
+        return response()->json($error);
+    }
+
+
+    public function validateAction($actionUser, $service_id)
+    {
+        $errors = [];
+
+        $action = Action::where('slug', $actionUser)->first();
+
+        if (!$action) {
+            $errors['action'] = 'Invalid action field value';
+        }
+
+
+        $service = Service::where('id', $service_id)->first();
+
+        if (!$service) {
+            $errors['service_id'] = 'Invalid service_id field value';
+        }
+
+        if (!empty($errors)) {
+            $error = [
+                "status" => "error",
+                'errors' => $errors,
+            ];
+
+            return response()->json($error);
+        }
+
+        return $action;
+    }
+
+    public function getServices($categories)
     {
 
         $resData = [
@@ -159,11 +225,11 @@ class ServiceFrontendService
             'data' => [],
         ];
 
-        $categories = ServiceCategory::all();
+
         foreach ($categories as $category) {
 
 
-            $services = $this->getServicesCategoryPagination($category->id);
+            $services = $this->getServicesCategoryPagination($category->services);
 
 
             $resData['data'][$category->slug] = [];
@@ -201,7 +267,7 @@ class ServiceFrontendService
 
 
 
-    public function getServicesCategory($categoryId, $offset)
+    public function getServicesCategory($services, $offset)
     {
 
         $resData = [
@@ -209,7 +275,8 @@ class ServiceFrontendService
             'data' => [],
         ];
 
-        $services = $this->getServicesCategoryPagination($categoryId, $offset);
+
+        $services = $this->getServicesCategoryPagination($services, $offset);
 
         $resData['current_page'] = $services['current_page'];
         $resData['last_page'] = $services['last_page'];
@@ -232,27 +299,9 @@ class ServiceFrontendService
 
 
 
-    public function getServicesCategoryPagination($categoryId, $offset = 0)
+
+    public function getServicesCategoryPagination($services, $offset = 0)
     {
-        $services = null;
-
-        if ($this->user) {
-
-            $user_id = $this->user->id;
-
-            $services = Service::where('service_category_id', $categoryId)
-                ->where('published', 1)
-                ->orderBy('rating', 'desc')
-                ->with(['userHistories' => function (Builder $query) use ($user_id) {
-                    $query->where('user_id', $user_id);
-                }])
-                ->get();
-        } else {
-            $services = Service::where('service_category_id', $categoryId)
-                ->where('published', 1)
-                ->orderBy('rating', 'desc')
-                ->get();
-        }
 
 
         $servicesLimit =  $services->skip($offset * $this->limit)->take($this->limit);
@@ -292,7 +341,8 @@ class ServiceFrontendService
         $temp['promo_discount'] = $service->promo_discount;
         $temp['vote_rating'] = $service->vote_rating;
         $temp['vote_count'] = $service->vote_count;
-        $temp['rating'] = $service->rating;
+
+        $temp['rating'] = $service->pivot->rating;
 
         $temp['url'] = $service->url;
         $temp['license'] = $service->license;

@@ -199,7 +199,7 @@
 
 
 
-                @if ($services->isEmpty())
+                @if (!$services || $services->isEmpty())
 
                 <p class="text">Сервісів ще немає</p>
 
@@ -223,7 +223,7 @@
                             <span class="top-services__item-num">#{{ $loop->iteration }}</span>
                         </div>
                         <div class="top-services__col">
-                            <img class="top-services__item-img" src="{{ asset('images/services/e-money.png') }}"
+                            <img class="top-services__item-img" src="{{ asset('storage/' . $service->icon ) }}"
                                 alt="Логотип {{ $service->name }}">
                             <span class="top-services__item-title">"{{ $service->name }}"</span>
                         </div>
@@ -234,7 +234,8 @@
                             <span class="top-services__item-rating">({{ $service->vote_count }} голосів)</span>
                         </div>
                         <div class="top-services__col">
-                            <div class="top-services-chart" data-percent="{{ $service->rating }}"></div>
+                            <div class="top-services-chart" data-percent="{{ $service->pivot->rating }}"></div>
+                            {{-- <div class="top-services-chart" data-percent="{{ $service->rating }}"></div> --}}
                         </div>
                         <div class="top-services__col">
                             <a class="top-services__item-link btn-1" href="#">Детальніше</a>

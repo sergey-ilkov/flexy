@@ -17,13 +17,15 @@ class ServiceSeeder extends Seeder
         //
 
         // ? создание 30 сервисов
+        $categories = ServiceCategory::all();
+
         $num = 1;
         for ($i = 0; $i < 30; $i++) {
 
 
-            $service = new Service([
+            $service = Service::create([
                 'name' => $num . ' service',
-                'icon' => 'images/services/credit-plus.png',
+                'icon' => '/images/services/credit-kasa.png',
                 'interset' => round((rand(0, 10) / 100), 2),
                 'term' => rand(3, 9) * 10,
                 'amount' => rand(1, 10) * 10000,
@@ -31,7 +33,6 @@ class ServiceSeeder extends Seeder
                 'promo_discount' => rand(1, 10) * 10,
                 'vote_rating' => rand(1, 10),
                 'vote_count' => rand(10, 1000),
-                'rating' => rand(0, 100) / 10,
                 'url' => 'https://laravel.com/docs/11.x',
                 'license' => 'Свідотцтво №' . fake()->randomNumber(9),
                 'comp_name' => fake()->words(4, true),
@@ -41,9 +42,10 @@ class ServiceSeeder extends Seeder
                 'published' => rand(0, 1) == 1,
             ]);
 
+            foreach ($categories as $category) {
 
-            $category = ServiceCategory::get()->random();
-            $category->services()->save($service);
+                $service->serviceCategories()->attach($category->id, ['rating' => rand(0, 100) / 10]);
+            }
 
             $num += 1;
         }

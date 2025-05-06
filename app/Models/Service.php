@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Service extends Model
 {
     //
     protected $fillable = [
-        // 'service_category_id',
         'name',
         'icon',
         'interset',
@@ -20,7 +20,6 @@ class Service extends Model
         'promo_discount',
         'vote_rating',
         'vote_count',
-        'rating',
         'url',
         'license',
         'comp_name',
@@ -41,7 +40,6 @@ class Service extends Model
         'promo_discount' => 'integer',
         'vote_rating' => 'integer',
         'vote_count' => 'integer',
-        'rating' => 'double',
         'url' => 'string',
         'license' => 'string',
         'comp_name' => 'string',
@@ -51,11 +49,13 @@ class Service extends Model
         'published' => 'boolean',
     ];
 
-    public function serviceCategory(): BelongsTo
+
+    public function serviceCategories(): BelongsToMany
     {
 
-        return $this->belongsTo(ServiceCategory::class);
+        return $this->belongsToMany(ServiceCategory::class)->withPivot('rating');
     }
+
 
 
 

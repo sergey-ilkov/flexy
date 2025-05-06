@@ -43,7 +43,7 @@ class ServiceAdminService
         $data = $this->getFormDataSaveImages($request);
 
 
-        return $this->serviceInterface->create($data, $request->service_category_id);
+        return $this->serviceInterface->create($data);
     }
 
 
@@ -59,7 +59,7 @@ class ServiceAdminService
 
         $data = $this->getFormDataSaveImages($request, $service);
 
-        return $this->serviceInterface->update($service, $data, $request->service_category_id);
+        return $this->serviceInterface->update($service, $data);
     }
 
     public function deleteService($id)
@@ -104,7 +104,6 @@ class ServiceAdminService
 
 
         return [
-            // 'service_category_id' => $request->service_category_id,
             'name' => $request->name,
             'icon' => $pathImage,
             'interset' => $request->interset,
@@ -114,7 +113,6 @@ class ServiceAdminService
             'promo_discount' => $request->promo_discount,
             'vote_rating' => $request->vote_rating,
             'vote_count' => $request->vote_count,
-            'rating' => $request->rating,
             'url' =>  $request->url,
             'license' => $request->license,
             'comp_name' => $request->comp_name,
@@ -122,6 +120,10 @@ class ServiceAdminService
             'address' => $request->address,
             'phone' =>  $request->phone,
             'published' => $request->has('published') ? true : false,
+
+            'f-rating' => $request['f-rating'],
+            'f-approve' => $request['f-approve'],
+            'f-cost' => $request['f-cost'],
 
         ];
     }

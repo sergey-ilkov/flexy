@@ -23,7 +23,10 @@ class ServiceAdminController extends Controller
 
         $services = $this->serviceAdminService->getPagination(10);
 
-        return view('admin.services.index', compact('services'));
+
+        $categories = ServiceCategory::all();
+
+        return view('admin.services.index', compact('services', 'categories'));
     }
 
     public function create()
@@ -60,6 +63,7 @@ class ServiceAdminController extends Controller
         $categories = ServiceCategory::all();
 
         $service = $this->serviceAdminService->getService($id);
+
 
         if (!$service) {
             alert(__('admin.errors.no-data'), 'danger');

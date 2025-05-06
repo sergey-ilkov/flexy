@@ -22,7 +22,7 @@ class HistorySeeder extends Seeder
         $date = Carbon::create(2020, 5, 28, 9, 0, 0);
 
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
 
             $newDate = $date->addWeeks(rand(1, 52))->format('Y-m-d H:i:s');
             $data = [

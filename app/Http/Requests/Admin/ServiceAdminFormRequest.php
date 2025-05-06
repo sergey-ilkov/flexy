@@ -24,7 +24,6 @@ class ServiceAdminFormRequest extends FormRequest
     {
 
         return [
-            'service_category_id' => 'required',
             'name' => ['required', Rule::unique('services')->ignore($this->id)],
             'icon' => 'image|mimes:png,jpg,webp,jpeg,svg,gif|max:100',
             'interset' => 'required|numeric|between:0,100.00',
@@ -34,13 +33,16 @@ class ServiceAdminFormRequest extends FormRequest
             'promo_discount' => 'required|integer',
             'vote_rating' => 'required|integer|between:1,10',
             'vote_count' => 'required|integer',
-            'rating' => 'required|numeric|between:0,10',
             'url' => 'required|url',
             'license' => 'required|string',
             'comp_name' => 'required|string',
             'email' => 'required|string',
             'address' => 'required|string',
             'phone' => 'required|string',
+
+            'f-rating' => 'required|numeric|between:0,10',
+            'f-approve' => 'required|numeric|between:0,10',
+            'f-cost' => 'required|numeric|between:0,10',
         ];
     }
 }

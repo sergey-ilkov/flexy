@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ServiceCategory extends Model
 {
@@ -18,8 +18,14 @@ class ServiceCategory extends Model
         'slug' => 'string',
     ];
 
-    public function services(): HasMany
+
+
+    public function services(): BelongsToMany
     {
-        return $this->hasMany(Service::class)->chaperone();
+
+        // return $this->belongsToMany(Service::class);
+        // return $this->belongsToMany(Service::class)->withPivot('rating');
+        // return $this->belongsToMany(Service::class)->withPivot('rating')->orderBy('pivot_rating', 'desc');
+        return $this->belongsToMany(Service::class)->withPivot('rating')->orderByPivot('rating', 'desc');
     }
 }

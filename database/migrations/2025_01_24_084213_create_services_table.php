@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(ServiceCategory::class)->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->string('name')->unique();
             $table->string('icon');
@@ -26,7 +25,7 @@ return new class extends Migration
             $table->integer('promo_discount')->nullable();
             $table->integer('vote_rating');
             $table->integer('vote_count');
-            $table->double('rating');
+
             $table->string('url');
             $table->string('license');
             $table->string('comp_name');

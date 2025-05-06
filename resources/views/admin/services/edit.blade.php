@@ -56,7 +56,7 @@
 
 
                         {{-- ? select service categories --}}
-                        <div class="card-body__group">
+                        {{-- <div class="card-body__group">
                             <x-admin.form-item>
 
                                 <x-admin.label> {{ __('admin.label.service-categories')}} </x-admin.label>
@@ -94,7 +94,7 @@
                                 </x-admin.select>
 
                             </x-admin.form-item>
-                        </div>
+                        </div> --}}
 
 
                         {{-- ? name --}}
@@ -221,23 +221,40 @@
                                 </x-admin.form-item>
                             </div>
 
-                            {{-- ? rating --}}
-                            <div class="card-body__group">
-                                <x-admin.form-item>
-
-                                    <x-admin.label> {{ __('admin.label.rating') }} </x-admin.label>
-                                    <x-admin.input value="{{ $service->rating }}" type="number" name="rating" min="0.01" max="10"
-                                        step="0.01" style="width: 200px" />
-
-                                </x-admin.form-item>
-
-                            </div>
+                          
                         </div>
 
 
 
 
-                        <div class="card-body-line"></div>
+                        {{-- ? rating service --}}
+                        
+
+                        <div class="card-body-row">
+
+                            @foreach ($categories as $category)    
+                                <div class="card-body__group">
+                                    <x-admin.form-item>
+    
+                                        <x-admin.label> {{ $category->name }} </x-admin.label>
+
+                                        @foreach ($service->serviceCategories as $service_category)
+                                            
+                                            @if ($category->slug == $service_category->slug)                                                
+                                               
+                                            <x-admin.input value="{{ $service_category->pivot->rating }}"  type="number" name="{{ $category->slug }}" min="0.01" max="10" step="0.01" style="width: 200px" />
+                                            
+                                            @endif
+                                        
+                                        
+                                        @endforeach
+
+    
+
+                                    </x-admin.form-item>                                    
+                                </div>
+                            @endforeach
+                        </div>
 
 
                         {{-- ? url --}}

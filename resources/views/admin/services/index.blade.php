@@ -36,7 +36,11 @@
 
                     <div class="table-body__col">id</div>
                     <div class="table-body__col">name</div>
-                    <div class="table-body__col" style="max-width: 200px">categoryName</div>
+
+                    @foreach ($categories as $category)                    
+                        <div class="table-body__col" style="max-width: 100px">{{ $category->slug }}</div>                        
+                    @endforeach
+
                     <div class="table-body__col" style="max-width: 100px">published</div>
                     <div class="table-body__col" style="max-width: 120px">created</div>
                     <div class="table-body__col" style="max-width: 120px">updated</div>
@@ -51,7 +55,11 @@
                 <div class="table-body__row @if(!$service->published){{ __('no-published') }}@endif">
                     <div class="table-body__col">{{ $service->id }}</div>
                     <div class="table-body__col">{{ $service->name }}</div>
-                    <div class="table-body__col" style="max-width: 200px">{{ $service->serviceCategory->name}}</div>
+
+                    @foreach ($service->serviceCategories as $category)                    
+                        <div class="table-body__col" style="max-width: 100px">{{ $category->pivot->rating }}</div>                        
+                    @endforeach
+
                     <div class="table-body__col" style="max-width: 100px">{{ $service->published ? 'true': 'false'}}</div>
                     <div class="table-body__col" style="max-width: 120px">{{ $service->created_at->format('d-m-Y') }}</div>
                     <div class="table-body__col" style="max-width: 120px">{{ $service->updated_at->format('d-m-Y') }}</div>

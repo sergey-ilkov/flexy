@@ -415,12 +415,6 @@ function closeModal(modal) {
 }
 
 
-// ? phone validation
-// ? phone validation
-// ? phone validation
-// ? phone validation
-// ? phone validation
-// ? phone validation
 function checkPhone(inputValue, len) {
     // let value = inputValue.replace(/[^\d+]/g, '');
     let value = inputValue.replace(/[^\d]/g, '');
@@ -431,12 +425,7 @@ function checkPhone(inputValue, len) {
 
     return value;
 }
-// ? phone validation
-// ? phone validation
-// ? phone validation
-// ? phone validation
-// ? phone validation
-// ? phone validation
+
 
 const curentYear = new Date().getFullYear();
 function checkDate(data) {
@@ -550,6 +539,9 @@ class SignUp {
     }
 
     events() {
+        this.modalForm.addEventListener('submit', e => {
+            e.preventDefault();
+        });
         // ? modal open / close
         this.buttons.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -562,6 +554,7 @@ class SignUp {
 
             }
         })
+
         // ? modal open / close END
 
         this.inputs.forEach(input => {
@@ -987,6 +980,10 @@ class SignIn {
 
     events() {
 
+        this.modalForm.addEventListener('submit', e => {
+            e.preventDefault();
+        });
+
         this.buttons.forEach(btn => {
             btn.addEventListener('click', () => {
                 openModal(this.modal);
@@ -1107,7 +1104,7 @@ class SignIn {
 
     send() {
 
-       
+
         if (this.flagSend) {
 
             this.flagSend = false;
@@ -1293,6 +1290,7 @@ class CreditServices {
             'get-services-category': 'get-services-category',
             'hidden-service': 'hidden-service',
             'active-service': 'active-service',
+            'get-credit': 'get-credit',
         };
 
         this.currentRequest = this.actions["get-services"];
@@ -1449,21 +1447,37 @@ class CreditServices {
 
                 this.currentBtnHidden = e.target.closest('.btn-hidden')
 
+                this.currentServiceItems = this.divServices.querySelectorAll(`[data-service-id="${this.currentServiceId}"]`);
+                // console.log(this.currentServiceItems);
 
+                // ? current services all hiiden/active
                 if (this.currentService.closest('.hidden')) {
-                    this.currentService.classList.remove('hidden');
+                    // this.currentService.classList.remove('hidden');
+                    this.currentServiceItems.forEach(item => {
+                        item.classList.remove('hidden');
+                    })
                     this.currentRequest = this.actions['active-service'];
 
 
                 } else {
-                    this.currentService.classList.add('hidden');
+                    // this.currentService.classList.add('hidden');
+                    this.currentServiceItems.forEach(item => {
+                        item.classList.add('hidden');
+                    })
                     this.currentRequest = this.actions['hidden-service'];
                 }
 
-                this.sendAction();
 
+                // ? if user: send data else: 
+                if (this.userAuth) {
+                    this.sendAction();
+                } else {
+                    this.saveServiceLocaleStorage(this.currentServiceId);
+                }
 
             }
+
+
 
             if (e.target.closest('.btn-history')) {
                 this.currentBtnHistory = e.target.closest('.btn-history');
@@ -1480,9 +1494,13 @@ class CreditServices {
                 }
             }
 
+
             if (e.target.closest('.service-link')) {
-                // console.log(e.target.closest('.service-link'));
-                // this.sendAction();
+                this.currentRequest = this.actions['get-credit'];
+
+                if (this.userAuth) {
+                    this.sendAction();
+                }
             }
 
 
@@ -1510,6 +1528,41 @@ class CreditServices {
                 closeModal(this.modalMessage);
             }
         })
+    }
+
+    saveServiceLocaleStorage(id) {
+
+
+        let currentId = Number(id);
+
+        // ? save info localestorage
+        this.servicesLS = localStorage.getItem('services');
+
+        if (this.servicesLS) {
+            this.servicesLS = JSON.parse(this.servicesLS);
+        }
+
+        if (this.servicesLS && Array.isArray(this.servicesLS) && this.servicesLS.length != 0) {
+
+            // console.log('this.servicesLS: ', this.servicesLS);
+
+            if (this.currentRequest == this.actions['hidden-service']) {
+                this.servicesLS.push(currentId);
+            }
+
+            if (this.currentRequest == this.actions['active-service']) {
+                const index = this.servicesLS.indexOf(currentId);
+                if (index != -1) {
+                    this.servicesLS.splice(index, 1);
+                }
+            }
+        } else {
+            this.servicesLS = [currentId];
+
+        }
+        // console.log('LS save this.servicesLS: ', this.servicesLS);
+
+        localStorage.setItem('services', JSON.stringify(this.servicesLS));
     }
 
     addHistoryContent() {
@@ -1544,7 +1597,7 @@ class CreditServices {
                             <div class="modal-history__item">
                                 <span>Немає історії</span>
                             </div>
-                            `;
+                        `;
                     }
                 }
             })
@@ -1560,15 +1613,22 @@ class CreditServices {
     sendAction() {
 
 
-        if (this.userAuth) {
+        this.formDefaultObjSendData();
 
-            this.formDefaultObjSendData();
-
-            this.objSendData['service_id'] = this.currentServiceId;
+        this.objSendData['service_id'] = this.currentServiceId;
 
 
-            this.send();
-        }
+        this.send();
+
+        // if (this.userAuth) {
+
+        //     this.formDefaultObjSendData();
+
+        //     this.objSendData['service_id'] = this.currentServiceId;
+
+
+        //     this.send();
+        // }
 
     }
 
@@ -1649,6 +1709,53 @@ class CreditServices {
 
     }
 
+    // function getServicesLocaleStorage(id) {
+    //     let services = localStorage.getItem('services');
+
+
+    //     // console.log('id: ', id);
+
+
+    //     if (services) {
+
+    //         services = JSON.parse(services);
+
+    //         if (Array.isArray(services) && services.length != 0) {
+
+    //             if (services.indexOf(id) != -1) {
+    //                 return true;
+    //             }
+    //         }
+
+    //         console.log('id: ', id);
+    //         // console.log('services.indexOf(id): ', services.indexOf(id));
+    //     }
+
+    //     return false;
+    // }
+    getServiceLocaleStorage() {
+        let services = localStorage.getItem('services');
+
+
+        if (services) {
+
+            services = JSON.parse(services);
+            if (Array.isArray(services) && services.length != 0) {
+
+                // console.log(services);
+                // console.log(Array.isArray(services));
+                // console.log(services.length != 0);
+                return services;
+            }
+
+
+
+        }
+
+        return false;
+
+    }
+
     addHtml() {
 
         addSvgGrdHtml();
@@ -1667,8 +1774,17 @@ class CreditServices {
                     this.html = '<div class="credit-services-preloader"></div>';
                     this.html += '<div class="credit-services__items">';
 
+                    this.servicesLS = this.getServiceLocaleStorage();
+                    // console.log('this.servicesLS ', this.servicesLS);
+
                     dataServices.forEach(data => {
-                        this.html += createServiceHtml(data, this.userAuth);
+                        if (this.servicesLS && this.servicesLS.indexOf(data.id) != -1) {
+
+                            this.html += createServiceHtml(data, this.userAuth, true);
+                        } else {
+
+                            this.html += createServiceHtml(data, this.userAuth);
+                        }
                     })
 
                     this.html += '</div>';
@@ -1699,8 +1815,20 @@ class CreditServices {
         if (dataServices && dataServices.length > 0) {
 
             this.html = '';
+            // dataServices.forEach(data => {
+            //     this.html += createServiceHtml(data, this.userAuth);
+            // })
+
+            this.servicesLS = this.getServiceLocaleStorage();
+
             dataServices.forEach(data => {
-                this.html += createServiceHtml(data, this.userAuth);
+                if (this.servicesLS && this.servicesLS.indexOf(data.id) != -1) {
+
+                    this.html += createServiceHtml(data, this.userAuth, true);
+                } else {
+
+                    this.html += createServiceHtml(data, this.userAuth);
+                }
             })
 
             this.divCurrentServicesItems.innerHTML = this.html;
@@ -1801,7 +1929,6 @@ class CreditServices {
 
     send() {
 
-
         if (this.flagSend) {
 
 
@@ -1869,6 +1996,7 @@ class CreditServices {
 
                     console.error('Fetch error:', error);
 
+
                     this.flagSend = true;
                 });
         }
@@ -1922,8 +2050,7 @@ function createPaginationHtml(paginate) {
 
 
 
-
-function createServiceHtml(data, auth = false) {
+function createServiceHtml(data, auth = false, serviceHidden = false) {
 
     const starsHtml = createStarsHtml(data.vote_rating);
     const chartHtml = createChartSvg(data.rating);
@@ -1931,11 +2058,22 @@ function createServiceHtml(data, auth = false) {
 
 
     let html = '';
-    if (auth && data.isHidden) {
-        html += `<div class="credit-service bg-grd-1 hidden" data-service-id="${data.id}">`;
+
+    if (auth) {
+        if (data.isHidden) {
+            html += `<div class="credit-service bg-grd-1 hidden" data-service-id="${data.id}">`;
+        } else {
+            html += `<div class="credit-service bg-grd-1" data-service-id="${data.id}">`;
+        }
     } else {
-        html += `<div class="credit-service bg-grd-1" data-service-id="${data.id}">`;
+        if (serviceHidden) {
+            html += `<div class="credit-service bg-grd-1 hidden" data-service-id="${data.id}">`;
+        } else {
+            html += `<div class="credit-service bg-grd-1" data-service-id="${data.id}">`;
+        }
     }
+
+
 
     html += `
         

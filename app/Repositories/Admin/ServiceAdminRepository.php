@@ -11,45 +11,62 @@ class ServiceAdminRepository implements ServiceAdminInterface
 
     public function all()
     {
-        return Service::with('serviceCategory')->all();
+        return Service::with('serviceCategories')->get();
     }
 
 
     public function paginate(int $num)
     {
-        return Service::with('serviceCategory')->paginate($num);
+        return Service::with('serviceCategories')->paginate($num);
     }
 
 
     public function find(int $id)
     {
-        return Service::with('serviceCategory')->find($id);
+        return Service::with('serviceCategories')->find($id);
     }
 
-    public function create(array $data, int $categoryId)
+    public function create(array $data)
     {
 
-        $service = new Service($data);
 
-        $category = ServiceCategory::find($categoryId);
+        $service = Service::create($data);
 
-        if (!$category) {
+        if (!$service) {
             return false;
         }
 
-        return $category->services()->save($service);
+        $ratings = [];
+
+        $categories = ServiceCategory::all();
+
+        foreach ($categories as $category) {
+            $ratings[$category->id] = ['rating' => $data[$category->slug]];
+        }
+
+
+        $service->serviceCategories()->attach($ratings);
+
+        return true;
     }
 
 
-    public function update($model, array $data, int $newCategoryId)
+    public function update($model, array $data)
     {
 
-        $categoryNew = ServiceCategory::find($newCategoryId);
 
-        $model->serviceCategory()->associate($categoryNew);
         $model->update($data);
 
-        return $model->save();
+        $ratings = [];
+
+        $categories = ServiceCategory::all();
+
+        foreach ($categories as $category) {
+            $ratings[$category->id] = ['rating' => $data[$category->slug]];
+        }
+        $model->serviceCategories()->sync($ratings);
+
+        return true;
     }
 
 

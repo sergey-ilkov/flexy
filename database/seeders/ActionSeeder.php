@@ -16,21 +16,18 @@ class ActionSeeder extends Seeder
         //
         $actions = [
             [
-                'name' => 'Ви сховали сервіс',
+                'name' => 'Сервіс сховано',
                 'slug' => 'hidden-service',
             ],
             [
-                'name' => 'Ви активували сервіс',
+                'name' => 'Сервіс відображено',
                 'slug' => 'active-service',
             ],
-            // [
-            //     'name' => 'Заявка на кредит (на розгляді)',
-            //     'slug' => 'application-pending',
-            // ],
-            // [
-            //     'name' => 'Заявка на кредит (схвалено)',
-            //     'slug' => 'application-approved',
-            // ],
+            [
+                'name' => 'Вибрано "Отримати позику"',
+                'slug' => 'get-credit',
+            ],
+
         ];
 
         foreach ($actions as $action) {

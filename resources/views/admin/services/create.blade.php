@@ -54,40 +54,13 @@
                     <x-admin.form action="{{ route('admin.services.store') }}" enctype="multipart/form-data" method="POST"
                         class="card-form">
 
-                        {{-- ? select service categories --}}
-                        <div class="card-body__group">
-                            <x-admin.form-item>
-
-                                <x-admin.label> {{ __('admin.label.service-categories')}} </x-admin.label>
-
-                                <x-admin.select name="service_category_id" style="max-width: 300px">
-                                    <option value="">Choose category</option>
-
-                                    @foreach ($categories as $category)
-
-                                    <option value="{{ $category->id }}" {{ (old('service_category_id')==$category->id ) ? 'selected': '' }}>
-
-                                        {{ $category->name }}
-
-                                    </option>
-
-                                    @endforeach
-
-
-                                </x-admin.select>
-
-                            </x-admin.form-item>
-                        </div>
-
-
-
 
                         {{-- ? name --}}
                         <div class="card-body__group">
                             <x-admin.form-item>
 
                                 <x-admin.label> {{ __('admin.label.name')}} </x-admin.label>
-                                <x-admin.input name="name" style="max-width: 300px" />
+                                <x-admin.input name="name"  />
 
                             </x-admin.form-item>
                         </div>
@@ -190,24 +163,30 @@
                                 </x-admin.form-item>
                             </div>
 
-                            {{-- ? rating --}}
-                            <div class="card-body__group">
-                                <x-admin.form-item>
 
-                                    <x-admin.label> {{ __('admin.label.rating') }} </x-admin.label>
-                                    <x-admin.input type="number" name="rating" min="0.01" max="10" step="0.01" style="width: 200px" />
-
-                                </x-admin.form-item>
-
-                            </div>
                         </div>
 
 
 
 
-                        <div class="card-body-line"></div>
 
+                        {{-- ? rating service --}}
+                        
 
+                        <div class="card-body-row">
+
+                            @foreach ($categories as $category)    
+                                <div class="card-body__group">
+                                    <x-admin.form-item>
+    
+                                        <x-admin.label> {{ $category->name }} </x-admin.label>
+                                        <x-admin.input type="number" name="{{ $category->slug }}" min="0.01" max="10" step="0.01" style="width: 200px" />
+    
+                                    </x-admin.form-item>                                    
+                                </div>
+                            @endforeach
+                        </div>
+                                               
                         {{-- ? url --}}
                         <div class="card-body__group">
                             <x-admin.form-item>

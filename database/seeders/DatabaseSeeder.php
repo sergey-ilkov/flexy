@@ -15,13 +15,13 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call([
-            // PostSeeder::class,
-            // ReviewSeed::class,
+            PostSeeder::class,
+            ReviewSeed::class,
             // UserSeed::class,
-            // ServiceCategorySeeder::class,
-            // ServiceSeeder::class,
-            // ActionSeeder::class,
-            // HistorySeeder::class,
+            ServiceCategorySeeder::class,
+            ServiceSeeder::class,
+            ActionSeeder::class,
+            HistorySeeder::class,
         ]);
     }
 }
