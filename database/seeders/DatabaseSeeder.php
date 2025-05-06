@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             ServiceCategorySeeder::class,
             ServiceSeeder::class,
             ActionSeeder::class,
-            HistorySeeder::class,
+            // HistorySeeder::class,
         ]);
     }
 }
