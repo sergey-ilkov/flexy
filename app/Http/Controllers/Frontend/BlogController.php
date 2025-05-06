@@ -28,9 +28,11 @@ class BlogController extends Controller
             $query->where('published', 1)->limit(10);
         }])->find(1);
 
-        // $services = null;
-        $services = $category->services;
-        // dd($posts, $services);
+        $services = null;
+        if ($category) {
+            $services = $category->services;
+        }
+
 
         return view('frontend.blog.index', compact('page', 'posts', 'services'));
     }
