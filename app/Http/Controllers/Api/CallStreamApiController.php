@@ -18,7 +18,7 @@ class CallStreamApiController extends Controller
     {
         $this->channel = Log::build([
             'driver' => 'single',
-            'path' => storage_path('logs/CallStream/callstream.log'),
+            'path' => storage_path('logs/callstream/callstream.log'),
         ]);
 
         $this->callStreamTask = $callStreamTask;

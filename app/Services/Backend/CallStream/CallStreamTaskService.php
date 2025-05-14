@@ -19,7 +19,7 @@ class CallStreamTaskService
         //
         $this->channel = Log::build([
             'driver' => 'single',
-            'path' => storage_path('logs/CallStream/callstreamtask.log'),
+            'path' => storage_path('logs/callstream/callstreamtask.log'),
         ]);
     }
 

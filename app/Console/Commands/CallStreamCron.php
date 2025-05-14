@@ -33,7 +33,7 @@ class CallStreamCron extends Command
         //
         $channel = Log::build([
             'driver' => 'single',
-            'path' => storage_path('logs/CallStream/callstreamcron.log'),
+            'path' => storage_path('logs/callstream/callstreamcron.log'),
         ]);
         // Log::stack(['stack', $channel])->info('Cron start.');
         Log::stack([$channel])->info('Cron start.');
