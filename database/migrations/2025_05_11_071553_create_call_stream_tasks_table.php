@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Action;
-use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,12 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('histories', function (Blueprint $table) {
+        Schema::create('call_stream_tasks', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(Service::class)->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignIdFor(Action::class)->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('task_id');
+            $table->json('attributes');
+            $table->boolean('result');
+            $table->string('error')->nullable();
+            $table->timestamp('expires_at');
 
             $table->timestamps();
         });
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('histories');
+        Schema::dropIfExists('call_stream_tasks');
     }
 };

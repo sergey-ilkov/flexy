@@ -4,14 +4,38 @@ namespace App\Services\Frontend;
 
 use App\Mail\SendCode;
 use App\Models\User;
+use App\Services\Backend\CallStream\CallStreamService;
+use App\Services\Backend\CallStream\CallStreamTaskService;
+use App\Services\Backend\CallStream\CallStreamTokenService;
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AuthUserService
 {
+
+    protected $channel;
+
+    public $callStream;
+    public $callStreamToken;
+    public $callStreamTask;
+
+    public function __construct(CallStreamService $callStream, CallStreamTokenService $callStreamToken, CallStreamTaskService $callStreamTask)
+    {
+        //
+        $this->channel = Log::build([
+            'driver' => 'single',
+            'path' => storage_path('logs/callstream/authuser.log'),
+        ]);
+
+        $this->callStream = $callStream;
+        $this->callStreamToken = $callStreamToken;
+        $this->callStreamTask = $callStreamTask;
+    }
 
     public function register($request)
     {
@@ -186,58 +210,173 @@ class AuthUserService
     }
 
 
+    // public function login($request)
     public function login($request)
     {
 
 
+        //  dd($request->cookie(config('session.cookie')));
+
+
+        // $request->validate([
+        //     'phone' => 'required',
+        // ]);
 
         $request->validate([
-            'phone' => 'required',
+            'action' => 'required',
+            'email' => 'required|email',
         ]);
 
-        $phone = strip_tags($request->phone);
 
-        $user = User::where('phone', $phone)->first();
+
+        $email = strip_tags($request->email);
+
+
+        $user = User::where('email', $email)->first();
 
         if (!$user) {
             $res = [
                 "status" => "error",
                 'errors' => [
-                    'phone' => __('messages.phone_not_registered'),
+                    'email' => __('messages.email_not_registered'),
+                ]
+            ];
+            return response()->json($res);
+        }
+
+        $phone = $user->phone;
+
+        if (!$phone) {
+            Log::stack([$this->channel])->error('User not phone: ', ['user' => $user->id, 'phone' => $phone]);
+
+            $res = [
+                "status" => "error",
+                'errors' => [
+                    'phone' => __('Авторизація тимчасово не працює. Ведуться технічні роботи.'),
                 ]
             ];
             return response()->json($res);
         }
 
 
-        $resService = true;
+        if ($request->action == 'get-phone') {
 
 
-        sleep(2);
-
-        if ($resService) {
-
-
-            Auth::loginUsingId($user->id);
-            $request->session()->regenerate();
+            $phone = substr($phone, 0, 6) . ' ***** ' . substr($phone, -2);
 
             $res = [
                 "status" => "ok",
-                'auth' => true,
+                'phone' => $phone,
             ];
-
             return response()->json($res);
         }
 
 
 
-        $res = [
+        if ($request->action == 'get-call') {
+
+
+            $phone = preg_replace('/[^0-9]/', '', $phone);
+            // $phone = null;
+
+            // ? call stream
+            // ? call stream
+
+            // ? информация о текущей сессии
+            Log::stack([$this->channel])->info('Current session: ', ['session' => $request->cookie(config('session.cookie'))]);
+
+            // ? проверяем на существование активного токена
+            $access_token = $this->checkTokenValidity();
+
+            if (!$access_token) {
+                Log::stack([$this->channel])->error('Error not Access tokens');
+
+                $error = [
+                    "status" => "error",
+                    'errors' => [
+                        'auth' => __('Авторизація тимчасово не працює. Ведуться технічні роботи.'),
+                    ]
+                ];
+                return response()->json($error);
+            }
+            Log::stack([$this->channel])->info('Access tokens success');
+
+
+            // ? отправляем задачу на звонок на апи сервиса стреам и ждем ответа с задачей
+            // ? если не получаем задачу сразу отдаем ошибку
+            $taskRespose = $this->callStream->task($access_token, $phone);
+
+            if (!$taskRespose) {
+                Log::stack([$this->channel])->error('Error not task  response');
+                $error = [
+                    "status" => "error",
+                    'errors' => [
+                        'auth' => __('Авторизація тимчасово не працює. Ведуться технічні роботи.'),
+                    ]
+                ];
+                return response()->json($error);
+            }
+
+
+            Log::stack([$this->channel])->info('Task Response success');
+
+            $task = $this->callStreamTask->createTask($user, $taskRespose);
+            // $task = $this->callStreamTask->createTask($user, $taskRespose, $request);
+
+
+            if (!$task) {
+                Log::stack([$this->channel])->error('Error create task');
+                $error = [
+                    "status" => "error",
+                    'errors' => [
+                        'auth' => __('Авторизація тимчасово не працює. Ведуться технічні роботи.'),
+                    ]
+                ];
+                return response()->json($error);
+            }
+            $res = [
+                "status" => "ok",
+                'task' => $task->task_id,
+            ];
+            return response()->json($res);
+        }
+
+
+
+        // ? не верный action
+        $error = [
             "status" => "error",
             'errors' => [
-                'auth' => __('messages.you_refused_authorization_site'),
+                'action' => __('Авторизація тимчасово не працює. Ведуться технічні роботи.'),
             ]
         ];
-        return response()->json($res);
+        return response()->json($error);
+    }
+
+    public function checkTokenValidity()
+    {
+
+        $access_token = $this->callStreamToken->getAccessToken();
+
+
+        if ($access_token == null || $access_token->token == null || $access_token->expires_at < Carbon::now()) {
+            // ? если null sleep(3) сек и еще раз попробывать если опять пусто - ошибка 
+            sleep(3);
+
+            $access_token = $this->callStreamToken->getAccessToken();
+
+            if ($access_token == null || $access_token->token == null || $access_token->expires_at < Carbon::now()) {
+
+                return false;
+            }
+        }
+        return $access_token->token;
+    }
+
+    public function authenticate($request)
+    {
+        // Auth::loginUsingId($userId);
+        // $request->session()->regenerate();
     }
 
 

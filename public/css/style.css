@@ -2429,6 +2429,9 @@ body.fixed .wrapper::before {
 .modal .btn-send {
     margin-top: 40px;
 }
+.modal .btn-send.hidden {
+    display: none;
+}
 .modal .btn-send[disabled] {
     cursor: not-allowed;
     background: var(--color-grey);
@@ -4515,6 +4518,15 @@ form label {
     font-weight: 300;
     color: var(--color-grey);
 }
+.message-phone {
+    font-family: "Poppins", sans-serif;
+    font-size: 17px;
+    font-weight: 300;
+    /* color: var(--color-grey); */
+}
+/* .get-phone-message.hidden {
+    display: none;
+} */
 
 /* ? services */
 

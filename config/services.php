@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'call_stream' => [
+        'email' => env('CALL_STREAM_EMAIL'),
+        'password' => env('CALL_STREAM_PASSWORD'),
+        'url_login' => env('CALL_STREAM_URL_LOGIN'),
+        'url_refresh' => env('CALL_STREAM_URL_REFRESH'),
+        'url_logout' => env('CALL_STREAM_URL_LOGOUT'),
+        'url_task' => env('CALL_STREAM_URL_TASK'),
+    ],
+
 ];

@@ -336,7 +336,17 @@ class ServiceFrontendService
         $temp['term'] = $service->term;
         $temp['amount'] = $service->amount;
 
-        $temp['promo_code'] = $this->user ?  $service->promo_code :  'XXX-XXX-XXX';
+        // $temp['promo_code'] = $this->user ?  $service->promo_code : 'XXX-XXX-XXX';
+
+        if ($this->user) {
+            $temp['promo_code'] = $service->promo_code;
+        } else {
+            if ($service->promo_code) {
+                $temp['promo_code'] = 'XXX-XXX-XXX';
+            } else {
+                $temp['promo_code'] = $service->promo_code;
+            }
+        }
 
         $temp['promo_discount'] = $service->promo_discount;
         $temp['vote_rating'] = $service->vote_rating;

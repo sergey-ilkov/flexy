@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CallStreamApiController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\Auth\AuthUserController;
 use App\Http\Controllers\Frontend\BlogController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ServiceController;
 use App\Http\Controllers\Frontend\TestController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -41,4 +43,4 @@ Route::middleware('auth:web')->group(function () {
 
 
 // ? test
-// Route::get('/test', [TestController::class, 'index'])->name('test');
+Route::get('/test', [TestController::class, 'index'])->name('test');

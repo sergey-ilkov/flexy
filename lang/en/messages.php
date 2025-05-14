@@ -12,8 +12,12 @@ return [
     'success_registration' => 'Successful registration!',
     'error_registration' => 'Registration error. Please try again.',
     'phone_not_registered' => 'A user with this phone number is not registered.',
+    'email_not_registered' => 'A user with this email number is not registered.',
 
     'you_refused_authorization_site' => 'You have refused authorization on the site.',
 
     'services_not_db' => 'Services have not yet been added to the database.',
+
+
+    'auth_error' => 'Technical works. Authorization is temporarily unavailable.',
 ];

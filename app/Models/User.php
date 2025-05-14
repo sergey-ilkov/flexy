@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+// use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $guard = 'web';
     /**
@@ -57,5 +60,14 @@ class User extends Authenticatable
     public function histories(): HasMany
     {
         return $this->hasMany(History::class)->with('service', 'action');
+    }
+
+    // ? task
+
+    public function callStreamTasks(): HasMany
+    {
+        //
+        return $this->hasMany(CallStreamTask::class)->chaperone();
+        // return $this->hasMany(CallStreamTask::class);
     }
 }

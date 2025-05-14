@@ -25,7 +25,7 @@ class ServiceSeeder extends Seeder
 
             $service = Service::create([
                 'name' => $num . ' service',
-                'icon' => '/images/services/credit-kasa.png',
+                'icon' => 'images/services/credit-kasa.png',
                 'interset' => round((rand(0, 10) / 100), 2),
                 'term' => rand(3, 9) * 10,
                 'amount' => rand(1, 10) * 10000,

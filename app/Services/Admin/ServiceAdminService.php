@@ -101,16 +101,14 @@ class ServiceAdminService
             }
         }
 
-
-
-        return [
+        $data = [
             'name' => $request->name,
             'icon' => $pathImage,
             'interset' => $request->interset,
             'term' => $request->term,
             'amount' => $request->amount,
-            'promo_code' => $request->promo_code,
-            'promo_discount' => $request->promo_discount,
+            // 'promo_code' => $request->promo_code,
+            // 'promo_discount' => $request->promo_discount,
             'vote_rating' => $request->vote_rating,
             'vote_count' => $request->vote_count,
             'url' =>  $request->url,
@@ -126,6 +124,15 @@ class ServiceAdminService
             'f-cost' => $request['f-cost'],
 
         ];
+
+        if ($request->promo_code) {
+            $data['promo_code'] =  $request->promo_code;
+        }
+        if ($request->promo_discount) {
+            $data['promo_discount'] =  $request->promo_discount;
+        }
+
+        return $data;
     }
 
     public function deleteImage($imagePath)

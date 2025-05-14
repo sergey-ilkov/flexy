@@ -432,7 +432,7 @@ function checkDate(data) {
     const arrData = data.split('-');
 
     let res = true;
-    if (arrData[0] < 1900 || arrData[0] >= curentYear) {
+    if (arrData[0] < 1900 || arrData[0] > curentYear - 18) {
         res = false;
     }
 
@@ -922,14 +922,17 @@ if (divModalSignUp && btnsModalSignUp.length > 0, divModalSignIn) {
 
 
 // ? SignIn
+
 class SignIn {
     constructor(modal, buttons) {
         this.modal = modal;
         this.buttons = buttons;
 
-
-        this.inputPhone = this.modal.querySelector('#phone-sign-in');
-        this.btnSend = this.modal.querySelector('.btn-send');
+        this.inputEmail = this.modal.querySelector('#email-sign-in');
+        this.btnGetCall = this.modal.querySelector('#btn-get-call');
+        this.btnGetPhone = this.modal.querySelector('#btn-get-phone');
+        this.messageGroupPhone = this.modal.querySelector('#get-phone-message');
+        this.messagePhone = this.modal.querySelector('.message-phone');
 
         this.messageInfo = this.modal.querySelector('.message-info');
         this.messageErrors = this.modal.querySelector('.message-errors');
@@ -952,14 +955,13 @@ class SignIn {
         this.modalMessage = document.querySelector('#messages');
         this.modalMessageText = this.modalMessage.querySelector('.message-text');
 
-        this.validPhone = 10;
 
-        this.divPhoneCode = this.modal.querySelector('#phone-code-sign-in');
+        this.action = null;
 
         this.init();
     }
     init() {
-        if (!this.modal || !this.btnSend || !this.inputPhone || !this.messageInfo) return;
+        if (!this.modal || !this.btnGetCall || !this.inputEmail || !this.btnGetPhone || !this.messageInfo) return;
 
         this.defaultForm();
 
@@ -970,12 +972,18 @@ class SignIn {
         this.messageInfo.style.display = 'none';
         this.messageErrors.style.display = 'none';
         this.messageErrors.innerHTML = '';
+        this.messageGroupPhone.style.display = 'none';
+        this.messagePhone.innerHTML = '';
 
-        this.currentFormGroup = this.inputPhone.parentNode;
+
+
+        this.currentFormGroup = this.inputEmail.parentNode;
         this.currentFormGroup.classList.remove('valid');
         this.currentFormGroup.classList.remove('error');
 
-        this.btnSend.setAttribute('disabled', '');
+        this.btnGetCall.setAttribute('disabled', '');
+        this.btnGetPhone.setAttribute('disabled', '');
+        this.btnGetCall.classList.add('hidden');
     }
 
     events() {
@@ -995,35 +1003,53 @@ class SignIn {
             }
         })
 
-        this.inputPhone.addEventListener('input', () => {
-            this.currentFormGroup = this.inputPhone.parentNode;
+        this.inputEmail.addEventListener('input', () => {
+            this.currentFormGroup = this.inputEmail.parentNode;
 
-
-
-            this.value = checkPhone(this.inputPhone.value, this.validPhone);
-            this.inputPhone.value = this.value;
-            if (this.value.length == this.validPhone) {
+            if (checkEmail(this.inputEmail.value)) {
                 this.flagSend = true;
                 this.currentFormGroup.classList.add('valid');
                 this.currentFormGroup.classList.remove('error');
-                this.btnSend.removeAttribute('disabled');
+                this.btnGetPhone.removeAttribute('disabled');
+                this.btnGetCall.removeAttribute('disabled');
             } else {
                 this.flagSend = false;
                 this.currentFormGroup.classList.remove('valid');
-                this.btnSend.setAttribute('disabled', '');
+                this.btnGetPhone.setAttribute('disabled', '');
+                this.btnGetCall.setAttribute('disabled', '');
             }
         })
 
-        this.btnSend.addEventListener('click', () => {
+        this.btnGetPhone.addEventListener('click', () => {
             if (this.flagSend) {
 
+                // this.messageInfo.style.display = 'block';
 
-                this.messageInfo.style.display = 'block';
-                this.btnSend.setAttribute('disabled', '');
+                this.btnGetPhone.setAttribute('disabled', '');
 
                 this.messageErrors.style.display = 'none';
                 this.messageErrors.innerHTML = '';
 
+                this.action = 'get-phone';
+                this.formObjSendData();
+
+                this.send();
+
+
+            }
+        })
+
+        this.btnGetCall.addEventListener('click', () => {
+            if (this.flagSend) {
+
+
+                this.messageInfo.style.display = 'block';
+                this.btnGetCall.setAttribute('disabled', '');
+
+                this.messageErrors.style.display = 'none';
+                this.messageErrors.innerHTML = '';
+
+                this.action = 'get-call';
                 this.formObjSendData();
 
                 this.send();
@@ -1043,8 +1069,9 @@ class SignIn {
 
         this.objSendData = {};
 
-        this.objSendData['phone'] = this.divPhoneCode.getAttribute('data-phone-code') + this.inputPhone.value;
-        // this.objSendData['phone'] = this.inputPhone.value;
+        this.objSendData['action'] = this.action;
+
+        this.objSendData['email'] = this.inputEmail.value;
 
         if (this.token) {
             this.objSendData['_token'] = this.token.getAttribute('content');
@@ -1058,6 +1085,18 @@ class SignIn {
 
             location.reload();
         }
+
+        if (this.action == 'get-phone') {
+
+            this.messageGroupPhone.style.display = 'flex';
+            this.messagePhone.innerHTML = this.objData['phone'];
+
+            this.btnGetPhone.setAttribute('disabled', '');
+            this.btnGetPhone.classList.add('hidden');
+
+            this.btnGetCall.classList.remove('hidden');
+            this.btnGetCall.removeAttribute('disabled');
+        }
     }
     resError() {
 
@@ -1067,6 +1106,8 @@ class SignIn {
 
             this.messageErrors.style.display = 'flex';
             this.messageInfo.style.display = 'none';
+
+
 
             return;
         }
@@ -1085,6 +1126,13 @@ class SignIn {
         this.html = '';
         for (const key in this.errors) {
             this.html += `<span>${this.errors[key]}</span>`;
+            const input = this.modalForm.querySelector(`[name="${key}"]`);
+            if (input) {
+                this.currentFormGroup = input.parentNode;
+                this.currentFormGroup.classList.remove('valid');
+                this.currentFormGroup.classList.add('error');
+            }
+
         }
 
         this.messageErrors.innerHTML = this.html;
@@ -1092,17 +1140,16 @@ class SignIn {
         this.messageInfo.style.display = 'none';
 
 
-        this.currentFormGroup = this.inputPhone.parentNode;
-        this.currentFormGroup.classList.remove('valid');
-        this.currentFormGroup.classList.add('error');
-
-        this.btnSend.removeAttribute('disabled');
-
+        this.btnGetCall.removeAttribute('disabled');
 
 
     }
 
     send() {
+
+        // console.log(this.objSendData);
+
+        // return;
 
 
         if (this.flagSend) {
@@ -1177,6 +1224,270 @@ class SignIn {
     }
 
 }
+// class SignIn {
+//     constructor(modal, buttons) {
+//         this.modal = modal;
+//         this.buttons = buttons;
+
+//         this.inputPhone = this.modal.querySelector('#phone-sign-in');
+//         this.btnSend = this.modal.querySelector('.btn-send');
+
+//         this.messageInfo = this.modal.querySelector('.message-info');
+//         this.messageErrors = this.modal.querySelector('.message-errors');
+
+//         this.currentFormGroup = null;
+
+//         this.value = null;
+//         this.flagSend = false;
+
+//         this.objSendData = null;
+
+//         this.modalForm = this.modal.querySelector('.modal-form');
+
+//         this.token = document.querySelector('[name="csrf-token"]');
+
+//         this.objData = null;
+
+//         this.url = this.modalForm.getAttribute('action');
+
+//         this.modalMessage = document.querySelector('#messages');
+//         this.modalMessageText = this.modalMessage.querySelector('.message-text');
+
+//         this.validPhone = 10;
+
+//         this.divPhoneCode = this.modal.querySelector('#phone-code-sign-in');
+
+//         this.init();
+//     }
+//     init() {
+//         if (!this.modal || !this.btnSend || !this.inputPhone || !this.messageInfo) return;
+
+//         this.defaultForm();
+
+//         this.events();
+//     }
+
+//     defaultForm() {
+//         this.messageInfo.style.display = 'none';
+//         this.messageErrors.style.display = 'none';
+//         this.messageErrors.innerHTML = '';
+
+//         this.currentFormGroup = this.inputPhone.parentNode;
+//         this.currentFormGroup.classList.remove('valid');
+//         this.currentFormGroup.classList.remove('error');
+
+//         this.btnSend.setAttribute('disabled', '');
+//     }
+
+//     events() {
+
+//         this.modalForm.addEventListener('submit', e => {
+//             e.preventDefault();
+//         });
+
+//         this.buttons.forEach(btn => {
+//             btn.addEventListener('click', () => {
+//                 openModal(this.modal);
+//             })
+//         })
+//         this.modal.addEventListener('click', e => {
+//             if (e.target.closest('.modal__btn-close') || this.modal.classList.contains('open') && !e.target.closest('.modal-body')) {
+//                 closeModal(this.modal);
+//             }
+//         })
+
+//         this.inputPhone.addEventListener('input', () => {
+//             this.currentFormGroup = this.inputPhone.parentNode;
+
+
+
+//             this.value = checkPhone(this.inputPhone.value, this.validPhone);
+//             this.inputPhone.value = this.value;
+//             if (this.value.length == this.validPhone) {
+//                 this.flagSend = true;
+//                 this.currentFormGroup.classList.add('valid');
+//                 this.currentFormGroup.classList.remove('error');
+//                 this.btnSend.removeAttribute('disabled');
+//             } else {
+//                 this.flagSend = false;
+//                 this.currentFormGroup.classList.remove('valid');
+//                 this.btnSend.setAttribute('disabled', '');
+//             }
+//         })
+
+//         this.btnSend.addEventListener('click', () => {
+//             if (this.flagSend) {
+
+
+//                 this.messageInfo.style.display = 'block';
+//                 this.btnSend.setAttribute('disabled', '');
+
+//                 this.messageErrors.style.display = 'none';
+//                 this.messageErrors.innerHTML = '';
+
+//                 this.formObjSendData();
+
+//                 this.send();
+
+
+//             }
+//         })
+
+//         this.modalMessage.addEventListener('click', e => {
+//             if (e.target.closest('.modal__btn-close') || this.modalMessage.classList.contains('open') && !e.target.closest('.modal-body')) {
+//                 closeModal(this.modalMessage);
+//             }
+//         })
+
+//     }
+//     formObjSendData() {
+
+//         this.objSendData = {};
+
+//         this.objSendData['phone'] = this.divPhoneCode.getAttribute('data-phone-code') + this.inputPhone.value;
+//         // this.objSendData['phone'] = this.inputPhone.value;
+
+//         if (this.token) {
+//             this.objSendData['_token'] = this.token.getAttribute('content');
+//         }
+
+//     }
+
+
+//     resSuccess() {
+//         if (this.objData['auth']) {
+
+//             location.reload();
+//         }
+//     }
+//     resError() {
+
+//         if (this.objData['status'] == 429) {
+
+//             this.messageErrors.innerHTML = this.objData.message;
+
+//             this.messageErrors.style.display = 'flex';
+//             this.messageInfo.style.display = 'none';
+
+//             return;
+//         }
+
+//         if (this.objData['status'] == 419) {
+//             this.modalMessageText.innerHTML = this.objData.message;
+//             closeModal(this.modal);
+//             openModal(this.modalMessage);
+
+//             return;
+//         }
+
+//         this.errors = this.objData['errors'];
+
+
+//         this.html = '';
+//         for (const key in this.errors) {
+//             this.html += `<span>${this.errors[key]}</span>`;
+//             const input = this.modalForm.querySelector(`[name="${key}"]`);
+//             if (input) {
+//                 this.currentFormGroup = input.parentNode;
+//                 this.currentFormGroup.classList.remove('valid');
+//                 this.currentFormGroup.classList.add('error');
+//             }
+
+//         }
+
+//         this.messageErrors.innerHTML = this.html;
+//         this.messageErrors.style.display = 'flex';
+//         this.messageInfo.style.display = 'none';
+
+
+
+
+
+//         // this.currentFormGroup = this.inputPhone.parentNode;
+//         // this.currentFormGroup.classList.remove('valid');
+//         // this.currentFormGroup.classList.add('error');
+
+//         this.btnSend.removeAttribute('disabled');
+
+
+
+//     }
+
+//     send() {
+
+
+//         if (this.flagSend) {
+
+//             this.flagSend = false;
+
+//             this.objData = null;
+
+
+//             const options = {
+//                 method: 'POST',
+//                 headers: {
+//                     'Accept': 'application/json',
+//                     'Content-Type': 'application/json;charset=utf-8'
+//                 },
+//                 body: JSON.stringify(this.objSendData)
+
+//             };
+
+//             fetch(this.url, options)
+//                 .then(async response => {
+//                     if (!response.ok) {
+//                         if (response.status === 422) {
+//                             const errorData = await response.json();
+//                             throw { status: 422, errors: errorData };
+//                         } else {
+//                             if (response.status === 419) {
+//                                 const errorData = await response.json();
+//                                 throw { status: 419, errors: errorData };
+//                             }
+//                             if (response.status === 429) {
+//                                 const errorData = await response.json();
+//                                 throw { status: 429, errors: errorData };
+//                             }
+//                             throw new Error(`HTTP error, status = ${response.status}`);
+//                         }
+//                     }
+
+//                     return response.json();
+//                 })
+//                 .then(result => {
+
+//                     this.objData = result;
+
+//                     if (result.status == 'ok') {
+//                         this.resSuccess();
+//                     } else {
+//                         this.resError();
+
+//                     }
+
+//                     this.flagSend = true;
+
+//                 })
+//                 .catch(error => {
+
+
+//                     if (error.status === 419 || error.status === 429) {
+//                         this.objData = {
+//                             'status': error.status,
+//                             'message': error.errors.message,
+//                         }
+//                         this.resError();
+//                     }
+
+//                     console.error('Fetch error:', error);
+
+//                     this.flagSend = true;
+//                 });
+
+//         }
+//     }
+
+// }
 
 
 const btnsModalSignIn = document.querySelectorAll('[data-target="sign-in"]');
@@ -2110,54 +2421,90 @@ function createServiceHtml(data, auth = false, serviceHidden = false) {
     `;
 
     if (auth) {
-        html += `
-                        <li class="credit-service-box__item">
-                            <span class="credit-service-box__col">
-                                <span>Промокод:</span>
-                                <span class="credit-service__decor-line"></span>                                                                   
-                            </span>
-                            <div class="pomocode-box">
-                                <span class="promocode-text">${data.promo_code}</span>
-                                <span class="promocode-btn-copy btn-promocode-copy">
-                                    <span class="promocode-btn-copy-text">Скопійовано!</span>
-                                    <svg viewBox="0 0 14 14" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12.2488 5.83317C12.2418 4.56442 12.1858 3.87725 11.7372 3.42925C11.2251 2.9165 10.3997 2.9165 8.75 2.9165H7C5.35033 2.9165 4.52492 2.9165 4.01275 3.42925C3.5 3.94142 3.5 4.76684 3.5 6.4165V9.33317C3.5 10.9828 3.5 11.8083 4.01275 12.3204C4.52492 12.8332 5.35033 12.8332 7 12.8332H8.75C10.3997 12.8332 11.2251 12.8332 11.7372 12.3204C12.25 11.8083 12.25 10.9828 12.25 9.33317V8.74984"
-                                            stroke="currentColor" stroke-width="0.875"
-                                            stroke-linecap="round" />
-                                        <path
-                                            d="M1.75 5.83317V9.33317C1.75 9.7973 1.93437 10.2424 2.26256 10.5706C2.59075 10.8988 3.03587 11.0832 3.5 11.0832M10.5 2.9165C10.5 2.45238 10.3156 2.00726 9.98744 1.67907C9.65925 1.35088 9.21413 1.1665 8.75 1.1665H6.41667C4.21692 1.1665 3.11675 1.1665 2.43367 1.85017C2.05217 2.23109 1.88358 2.7415 1.8095 3.49984"
-                                            stroke="currentColor" stroke-width="0.875"
-                                            stroke-linecap="round" />
-                                    </svg>
+        if (data.promo_code) {
+            html += `
+                            <li class="credit-service-box__item">
+                                <span class="credit-service-box__col">
+                                    <span>Промокод:</span>
+                                    <span class="credit-service__decor-line"></span>                                                                   
                                 </span>
-                            </div>                                                              
-                        </li>
-        `;
+                                <div class="pomocode-box">
+                                    <span class="promocode-text">${data.promo_code}</span>
+                                    <span class="promocode-btn-copy btn-promocode-copy">
+                                        <span class="promocode-btn-copy-text">Скопійовано!</span>
+                                        <svg viewBox="0 0 14 14" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                                d="M12.2488 5.83317C12.2418 4.56442 12.1858 3.87725 11.7372 3.42925C11.2251 2.9165 10.3997 2.9165 8.75 2.9165H7C5.35033 2.9165 4.52492 2.9165 4.01275 3.42925C3.5 3.94142 3.5 4.76684 3.5 6.4165V9.33317C3.5 10.9828 3.5 11.8083 4.01275 12.3204C4.52492 12.8332 5.35033 12.8332 7 12.8332H8.75C10.3997 12.8332 11.2251 12.8332 11.7372 12.3204C12.25 11.8083 12.25 10.9828 12.25 9.33317V8.74984"
+                                                stroke="currentColor" stroke-width="0.875"
+                                                stroke-linecap="round" />
+                                            <path
+                                                d="M1.75 5.83317V9.33317C1.75 9.7973 1.93437 10.2424 2.26256 10.5706C2.59075 10.8988 3.03587 11.0832 3.5 11.0832M10.5 2.9165C10.5 2.45238 10.3156 2.00726 9.98744 1.67907C9.65925 1.35088 9.21413 1.1665 8.75 1.1665H6.41667C4.21692 1.1665 3.11675 1.1665 2.43367 1.85017C2.05217 2.23109 1.88358 2.7415 1.8095 3.49984"
+                                                stroke="currentColor" stroke-width="0.875"
+                                                stroke-linecap="round" />
+                                        </svg>
+                                    </span>
+                                </div>                                                              
+                            </li>
+            `;
+        } else {
+            html += `
+                <li class="credit-service-box__item">
+                    <span class="credit-service-box__col">
+                        <span>Промокод:</span>
+                        <span class="credit-service__decor-line"></span>                                                                   
+                    </span>
+                    <div class="pomocode-box">
+                        
+                    </div>                                                              
+                </li>
+            `;
+
+        }
 
     } else {
 
-        html += `
-                        <li class="credit-service-box__item">
-                            <span class="credit-service-box__col">
-                                <span>Промокод:</span>
-                                <span class="credit-service__promocode color-white fw-600">${data.promo_code}</span>
-                            </span>
-                            <button class="credit-service__btn-promocode btn-promocode" type="button">
-                                Відкрити
-                            </button>                            
-                        </li>
-        `;
+
+        if (data.promo_code) {
+
+            html += `
+                <li class="credit-service-box__item">
+                    <span class="credit-service-box__col">
+                        <span>Промокод:</span>
+                        <span class="credit-service__promocode color-white fw-600">${data.promo_code}%</span>
+                    </span>
+                    <button class="credit-service__btn-promocode btn-promocode" type="button">
+                        Відкрити
+                    </button>                            
+                </li>
+            `;
+
+        } else {
+            html += `
+                <li class="credit-service-box__item">
+                    <span class="credit-service-box__col">
+                        <span>Промокод:</span>
+                        <span class="credit-service__promocode color-white fw-600"></span>
+                    </span>                                            
+                </li>
+            `;
+
+        }
+
+
     }
 
+    let promoDiscount = '';
+    if (data.promo_discount) {
+        promoDiscount = `${data.promo_discount}%`;
+    }
     html += `      
                         <li class="credit-service-box__item">
                             <span class="credit-service-box__col">
                                 <span>Знижка по промокоду</span>
                                 <span class="credit-service__decor-line"></span>
                             </span>
-                            <span class="credit-service-box__col color-white fw-500">${data.promo_discount}%</span>
+                            <span class="credit-service-box__col color-white fw-500">${promoDiscount}</span>
                         </li>
                     </ul>
                     <div class="credit-service-box__accordion">
