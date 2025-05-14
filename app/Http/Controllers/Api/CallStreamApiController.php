@@ -36,7 +36,7 @@ class CallStreamApiController extends Controller
 
     public function task(Request $request)
     {
-        Log::stack([$this->channel])->info('Request update task', ['schemeAndHttpHost' => $request->schemeAndHttpHost(), '$request' => $request->all()]);
+        Log::stack([$this->channel])->info('Request update task', ['$request' => $request, '$request' => $request->all()]);
 
         // return dd(
         //     $request->host(),
