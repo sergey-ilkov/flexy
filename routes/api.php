@@ -11,7 +11,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::middleware([ApiCallStreamDomain::class])->prefix('/v1')->group(function () {
+Route::prefix('/v1')->group(function () {
     Route::prefix('/callstream/task')->group(function () {
         Route::get('/', [CallStreamApiController::class, 'index'])->name('api.task.index');
         Route::post('/', [CallStreamApiController::class, 'task'])->name('api.task.update');
