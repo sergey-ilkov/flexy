@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\CallStreamApiController;
-use App\Http\Middleware\ApiCallStreamDomain;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
