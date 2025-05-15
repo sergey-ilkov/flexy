@@ -22,7 +22,9 @@ class ApiDomainValide
             'schemeAndHttpHost' => $request->schemeAndHttpHost(),
         ];
 
-        return response()->json($res);
+        return response()->json($res)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 
 
         return $next($request);
