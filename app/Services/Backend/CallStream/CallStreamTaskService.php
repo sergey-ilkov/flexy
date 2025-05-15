@@ -55,7 +55,8 @@ class CallStreamTaskService
         // ? нужно тестировать что присылает в ответ сервис апи call stream
         // ? для теста сохраним присланный запрос в  attributes->res
 
-        $task_id = $request->message['id'];
+        $task_id = strip_tags($request->message['id']);
+
 
         if ($task_id) {
 

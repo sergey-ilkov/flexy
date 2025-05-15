@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ApiCallStreamDomain;
 use App\Http\Middleware\RedirectTrailingSlash;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;

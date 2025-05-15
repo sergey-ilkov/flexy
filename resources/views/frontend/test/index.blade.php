@@ -103,7 +103,7 @@
                 });
 
         }
-        // testUrl();
+        testUrl();
         
 
     </script>

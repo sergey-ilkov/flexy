@@ -54,9 +54,9 @@ class TestController extends Controller
 
         // dd($authUser->checkTokenValidity());
 
-        $user = User::find(10);
-        $phone = $user->phone;
-        dd(substr($phone, 0, 3), substr($phone, -3));
+        // $user = User::find(10);
+        // $phone = $user->phone;
+        // dd(substr($phone, 0, 3), substr($phone, -3));
 
         // +380952057139
 

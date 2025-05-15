@@ -2542,6 +2542,13 @@ form label {
 .modal-form__input-phone {
     padding-left: 55px;
 }
+/* ? modal sign-in */
+.sign-in-step {
+    display: none;
+}
+.sign-in-step.active {
+    display: block;
+}
 /* ? modal-body-history */
 .modal-body-history {
     overflow-y: auto;

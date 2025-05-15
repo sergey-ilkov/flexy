@@ -29,18 +29,26 @@ class CallStreamApiController extends Controller
     {
 
 
-        return  response('Get /api/v1/callstream/task 200 ok', 200);
+        return  response('GET /api/v1/callstream/task 200 ok', 200);
         // return  response('/api/v1/task 200 ok', 200)->header('Content-Type', 'text/html');
         // return response('ok', 200);
     }
 
     public function task(Request $request)
     {
-        Log::stack([$this->channel])->info('ApiController. Request update task', [
-            'host()' => $request->host(),
-            'httpHost()' => $request->httpHost(),
-            '$request' => $request->all()
-        ]);
+
+        // ? test midlleware
+
+
+        // ? проверка данных request
+        // if (isset($request->message['id2'])) {
+        //     return response()->json(['res' => $request->message['id2']]);
+        // }
+        // return response()->json(['res' => $request->message['id']]);
+        // return response()->json(['res' => $request->all()]);
+
+
+        Log::stack([$this->channel])->info('ApiController. Request update task', ['$request' => $request->all()]);
 
         if (!$request->message || !$request->message['id']) {
             Log::stack([$this->channel])->info('ApiController. Error Request update task');

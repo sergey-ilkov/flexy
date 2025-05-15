@@ -955,6 +955,7 @@ class SignIn {
         this.modalMessage = document.querySelector('#messages');
         this.modalMessageText = this.modalMessage.querySelector('.message-text');
 
+        this.stepItems = this.modal.querySelectorAll('.sign-in-step');
 
         this.action = null;
 
@@ -984,6 +985,10 @@ class SignIn {
         this.btnGetCall.setAttribute('disabled', '');
         this.btnGetPhone.setAttribute('disabled', '');
         this.btnGetCall.classList.add('hidden');
+
+        this.stepItems.forEach((step, index) => {
+            index == 0 ? step.classList.add('active') : step.classList.remove('active');
+        })
     }
 
     events() {
@@ -1096,6 +1101,9 @@ class SignIn {
 
             this.btnGetCall.classList.remove('hidden');
             this.btnGetCall.removeAttribute('disabled');
+
+            this.stepItems[0].classList.remove('active');
+            this.stepItems[1].classList.add('active');
         }
     }
     resError() {

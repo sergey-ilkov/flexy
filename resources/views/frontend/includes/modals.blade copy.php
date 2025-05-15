@@ -29,37 +29,33 @@
     <div class="modal-body bg-grd-1">
         <div class="modal__title">Вхід</div>
         <form class="modal-form" action="{{ route('user.login') }}">
-          
-            <div class="sign-in-steps">
-                <div class="sign-in-step">   
-                    <div class="modal-form-box">
-                        <div class="modal-form-group">
-                            <label class="modal-form__label" for="phone-sign-in">Email:</label>                
-                            <input id="email-sign-in" class="modal-form__input" type="text" placeholder="example@gmail.com" autocomplete="off"
-                            name="email">                                      
-                        </div>                     
-                    </div>
+            {{-- <div class="modal-form-box">
+                <div class="modal-form-group">
+                    <label class="modal-form__label" for="phone-sign-in">Номер телефону:</label>                
+                    <div class="modal-form-group-phone">
+                        <span id="phone-code-sign-in" class="phone-code" data-phone-code="+38">+38</span>
+                        <input id="phone-sign-in" class="modal-form__input modal-form__input-phone" type="text" placeholder="000 000 00 00" autocomplete="off"
+                            name="phone">
+                    </div>                    
+                </div>
+            </div> --}}
 
-                    <button id="btn-get-phone" type="button" class="modal-form__btn btn-1 btn-send">Далі</button>                 
-                   
+            <div class="modal-form-box">
+                <div class="modal-form-group">
+                    <label class="modal-form__label" for="phone-sign-in">Email:</label>                
+                    <input id="email-sign-in" class="modal-form__input" type="text" placeholder="example@gmail.com" autocomplete="off"
+                        name="email">                                      
+                </div>
+                <div id="get-phone-message" class="modal-form-group get-phone-message">
+                    <label class="modal-form__label">Teлефон:</label>
+                    <div class="message-phone"></div>                         
                 </div>
 
-                <div class="sign-in-step">
-
-                    <div class="modal-form-box">
-               
-                        <div id="get-phone-message" class="modal-form-group get-phone-message">
-                            <label class="modal-form__label">Teлефон:</label>
-                            <div class="message-phone"></div>                         
-                        </div>
-                    </div>
-
-                    <button id="btn-get-call" type="button" class="modal-form__btn btn-1 btn-send hidden">Отримати дзвінок</button>
-
-                </div>
             </div>
-         
+            <button id="btn-get-phone" type="button" class="modal-form__btn btn-1 btn-send">Далі</button>
+            <button id="btn-get-call" type="button" class="modal-form__btn btn-1 btn-send hidden">Отримати дзвінок</button>
         </form>
+
 
         <div class="message-info">Очікуйте на дзвінок та дотримуйтесь інструкцій.</div>
         <div class="message-errors"></div>
