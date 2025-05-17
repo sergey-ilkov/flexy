@@ -1551,7 +1551,7 @@ function createChartSvg(dataPercent) {
             <circle cx='44' cy='44' r='41'></circle>
             <circle cx='44' cy='44' r='41' style="--dasharray:${dasharray}; --dashoffset: ${dashoffset};" stroke="url(#chart-grd-01)"></circle>
         </svg>  
-        <span>${dataPercent.toFixed(1)}</span>                
+        <span>${Number(dataPercent).toFixed(1)}</span>                
     `;
 
     return html;
